@@ -1,6 +1,6 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(120deg, #89c0fe 0%, #66a6ff 100%);
+    background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
     color: #333;
     margin: 0;
     padding: 15px;
@@ -341,4 +341,49 @@ button#add-step:hover, button#create-recipe:hover, button#use-template:hover {
     50% { transform: translateX(5px); }
     75% { transform: translateX(-5px); }
     100% { transform: translateX(0); }
+}
+
+#show-graph-button {
+    background-color: #db34ca;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    display: inline-block; 
+    margin-left: auto; 
+    margin-right: auto; 
+}
+
+#show-graph-button:hover {
+    background-color: #ba2ca5;
+    transform: scale(1.05); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); 
+}
+
+#show-graph-button:active {
+    transform: scale(0.95); 
+    background-color: #9f2489; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+}
+
+#show-graph-container {
+    text-align: center; 
+    width: 100%; 
+}
+
+#graph-container {
+    display: none; 
+    margin-top: 30px;
+    text-align: center;
+}
+
+#graph-container img {
+    max-width: 90%; 
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }

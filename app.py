@@ -1,6 +1,12 @@
 import copy
 from flask import Flask, jsonify, render_template, request
 import json
+import matplotlib
+import matplotlib.pyplot as plt
+import pandas as pd
+import io
+import base64
+matplotlib.use('Agg')
 
 app = Flask(__name__)
 
@@ -136,6 +142,58 @@ def show_recipes(recipe_id, steps):
         return jsonify(recipes[recipe_id]['steps']), 200
     else:
         return jsonify(recipes[recipe_id]), 200
+
+
+@app.route('/visualize/<int:recipe_id>')
+def visualize(recipe_id):
+    recipe = recipes[recipe_id]
+    total_optimal_time, steps_optimal = calculate_time(recipe['steps'], optimal=True)
+    total_normal_time, steps_normal = calculate_time(recipe['steps'], optimal=False)
+
+    # im using pandas to get dataframe
+    df_optimal = pd.DataFrame(steps_optimal)
+    df_normal = pd.DataFrame(steps_normal)
+
+    # x axis
+    fig, ax = plt.subplots(figsize=(14, 5))
+    # optimal
+    for index, row in df_optimal.iterrows():
+        # barh -> yatay çubuk
+        ax.barh( (row['id'] - 0.2) , (row['end'] - row['start']) , height=0.4 , left=row['start'] , color='#27ae60' , edgecolor='black' , label='Optimal' if index == 0 else "" )
+        # ax.barh(y, width, height, left, ...)
+
+    # normal
+    for index, row in df_normal.iterrows():
+        ax.barh( (row['id'] + 0.2) , (row['end'] - row['start'] ) , height=0.4 , left=row['start'] , color='#e74c3c' , edgecolor='black' , label='Normal' if index == 0 else "" )
+
+    # barh that shows difference
+    time_saved = total_normal_time - total_optimal_time
+    ax.barh( (len(df_optimal) + 1 ), ( time_saved ) , left=total_optimal_time , height=0.4 , color='cyan' , edgecolor='black' , label='Time Saved')
+
+    # graph attributes
+    ax.set_xlabel('Time', fontsize=12)
+    ax.set_ylabel('Steps', fontsize=12)
+    ax.set_title(f'Optimal vs Normal Cooking Time for {recipe["recipe"]}', fontsize=14, fontweight='bold')
+
+    ax.set_yticks(list(df_optimal['id']) + [len(df_optimal) + 1]) # [ 1,2,4,5,6,7,8,9 ] + [ 9 + 1 ] = [ 1,2,3,4,5,6,7,8,9,10 ]
+    ax.set_yticklabels([f"Step {i}" for i in df_optimal['id']] + ["Time Saved"], fontsize=10)
+
+    # grid and axis
+    ax.grid(True, which='both', axis='x', linestyle='--', linewidth=1)
+    ax.xaxis.set_tick_params(labelsize=10) # time
+    ax.yaxis.set_tick_params(labelsize=10) # step
+
+    # legend settings to show only unique ones
+    handles, labels = ax.get_legend_handles_labels()
+    unique_labels = dict(zip(labels, handles))
+    ax.legend(unique_labels.values(), unique_labels.keys(), fontsize=10)
+
+    buf = io.BytesIO()  # görüntüyü bellekte sakla, kaydetmek yerine
+    plt.savefig(buf, format='png', dpi=150)  # png formatında 150 dpi ayarında buf'a kaydediyorum
+    img_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')  # buf -> Base64 to use in HTML
+    buf.close()  # close buf and release memory
+
+    return f'<img src="data:image/png;base64,{img_base64}"/>'
 
 
 if __name__ == '__main__':

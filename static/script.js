@@ -178,11 +178,20 @@ function showError(input, message, errorMessage) {
 
 
 // calculate on button click
-document.querySelectorAll('.recipe-link').forEach(function (element) {
-    element.addEventListener('click', function (event) {
+document.querySelectorAll('.recipe-link').forEach(function(element) {
+    element.addEventListener('click', function(event) {
         event.preventDefault();
         const recipeId = event.target.getAttribute('data-recipe-id');
-        calculateOptimal(recipeId);
+        calculateOptimal(recipeId); 
+        
+        const graphContainer = document.getElementById('show-graph-container');
+        graphContainer.style.display = 'inline-block'; 
+
+        const graphButton = document.getElementById('show-graph-button');
+        graphButton.style.display = 'inline-block'; 
+        graphButton.setAttribute('data-recipe-id', recipeId); 
+
+        document.getElementById('graph-container').style.display = 'none';
     });
 });
 
@@ -278,3 +287,28 @@ function useTemplate() {
 
     document.getElementById('recipe-name').value = "Menemen";
 }
+
+document.getElementById('show-graph-button').addEventListener('click', function() {
+    const recipeId = this.getAttribute('data-recipe-id'); 
+    const graphContainer = document.getElementById('graph-container');
+    //console.log(graphContainer.innerHTML)
+
+    graphContainer.innerHTML = ""
+
+    if (graphContainer.style.display === "block") {
+        graphContainer.style.display = "none";
+        return;
+    }
+    if (graphContainer.innerHTML === "") {
+        fetch(`/visualize/${recipeId}`)  // GET 
+            .then(response => response.text())
+            .then(data => {
+                console.log(data)
+                graphContainer.innerHTML = data; 
+                graphContainer.style.display = "block";  
+            })
+            .catch(error => {
+                console.error("Error: ", error);
+            });
+    } 
+});
