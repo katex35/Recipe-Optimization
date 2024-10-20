@@ -1,10 +1,11 @@
 body {
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+    background: linear-gradient(120deg, #89c0fe 0%, #66a6ff 100%);
     color: #333;
     margin: 0;
     padding: 15px;
     text-align: center;
+    animation: fadeIn 1s ease-in-out;
 }
 
 h1 {
@@ -13,31 +14,36 @@ h1 {
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     margin-bottom: 20px;
     letter-spacing: 1.5px;
+    animation: bounceInDown 1s ease-out;
 }
 
-h2 {
+#result-container h2 {
     font-size: 1.5rem; 
     color: #565454;
     text-shadow: 1.5px 1.5px 3px rgba(0, 0, 0, 0.2);
     margin-bottom: 15px;
     letter-spacing: 1px;
     text-align: center;
+    animation: fadeInUp 1s ease-in-out;
 }
 
 #recipe-list h2 {
     color: #fff;
     font-size: 1.6rem;  
     margin-bottom: 10px;
+    animation: zoomIn 1s ease-out;
 }
 
 #recipe-list ul {
     list-style: none;
     padding: 0;
+    animation: slideInLeft 1s ease-in;
 }
 
 #recipe-list li {
     display: inline-block;
     margin: 8px 12px;  
+    
 }   
 
 a.recipe-link {
@@ -306,4 +312,33 @@ button#add-step:hover, button#create-recipe:hover, button#use-template:hover {
     margin-right: 8px;
     display: inline-block;
     vertical-align: middle;
+}
+
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes bounceInDown {
+    from { transform: translateY(-100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
 }
