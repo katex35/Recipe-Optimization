@@ -1,6 +1,5 @@
 import copy
 from flask import Flask, jsonify, render_template, request
-import json
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
